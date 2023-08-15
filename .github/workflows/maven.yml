@@ -28,6 +28,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
+    - name: Build with Maven
+      run: mvn clean  --file backend/pom.xml
+
     - name: Cache Maven dependencies
       uses: actions/cache@v2
       with:
@@ -37,7 +40,7 @@ jobs:
          ${{ runner.os }}-maven-
 
     - name: Package and Test with Maven
-      run: mvn -B clean package --file backend/pom.xml
+      run: mvn -B package --file backend/pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
