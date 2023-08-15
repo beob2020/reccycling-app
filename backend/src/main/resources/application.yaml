@@ -13,6 +13,9 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  flyway:
+    enabled: true
+    create-schemas: true
 
 backend:
   jwt:
