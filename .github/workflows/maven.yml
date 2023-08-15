@@ -15,10 +15,32 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  test:
+    name: Integration Tests with Testcontainers
     runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:stable
+        options: --privileged --workdir=/github/workspace 
+        volumes:
+          - /home/runner/work/_temp/_github_home:/github/home
+          - /home/runner/work/_temp/_github_workflow:/github/workflow
+          - /home/runner/work/_temp/_runner_file_commands:/github/file_commands
+          - /var/run/docker.sock:/var/run/docker.sock
 
+      postgres:
+        image: postgres:13.3
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+
+  build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -27,7 +49,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    
+    - name: Cache Maven dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+         ${{ runner.os }}-maven-
+          
     - name: Build with Maven
+      run: mvn clean install backend/pom.xml
+
+    - name: Package and Test with Maven
       run: mvn -B package --file backend/pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
