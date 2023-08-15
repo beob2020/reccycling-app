@@ -1,15 +1,10 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/recycling_db
-    username: admin123
-    password: adminpassword123
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop
-    open-in-view: false
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
   jackson:
     serialization:
       fail-on-empty-beans: false
