@@ -13,3 +13,8 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+backend:
+  jwt:
+    secret: ADMIN123$%&/3
+  #  expiration: 86400000
